@@ -61,7 +61,7 @@ div * {
   max-height: 50px;
   float: left;
   margin: 3px;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.1s ease-in-out;
   border-radius: 5px;
   font-size: 30pt;
   padding: 0 0 0 6px;
@@ -73,8 +73,8 @@ div * {
   color: #fff;
   background: rgba(37, 88, 228, 0.712);
   z-index: 2;
-  transform: translate(10px, -10px);
-  animation: neonBlueText 1.5s ease-in-out infinite alternate;
+  transform: translate(3px, -3px);
+  animation: neonBlueText 0.1s ease-in-out infinite alternate;
 }
 
 .grey {
