@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "brain.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/get_move",
+      "dest": "brain.py"
+    }
+  ]
+}
