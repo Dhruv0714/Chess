@@ -1084,36 +1084,78 @@ let main = {
       return coordinates;
     },
 
+    animate_move: function (startId, endId, pieceImg, callback) {
+      let $start = $("#" + startId);
+      let $end = $("#" + endId);
+      
+      // Get exact pixel positions on the screen
+      let startPos = $start.offset();
+      let endPos = $end.offset();
+
+      // Create a floating clone of the piece
+      let $ghost = $('<div class="moving-piece">' + pieceImg + '</div>');
+
+      // Style the ghost to match the start position
+      $ghost.css({
+        position: "absolute",
+        top: startPos.top,
+        left: startPos.left,
+        width: $start.width(),
+        height: $start.height(),
+        fontSize: $start.css("font-size"),
+        zIndex: 1000,
+        pointerEvents: "none" // prevents clicking the moving piece
+      });
+
+      $("body").append($ghost);
+
+      // Slide to the end position
+      $ghost.animate({
+        top: endPos.top,
+        left: endPos.left
+      }, 300, function() {
+        $ghost.remove(); // Clean up the ghost
+        callback();      // Execute the logic to update the board
+      });
+    },
+    
+
     capture: function (target) {
       let selectedpiece = {
         name: $("#" + main.variables.selectedpiece).attr("chess"),
         id: main.variables.selectedpiece,
       };
-
-      //new cell
-      $("#" + target.id).html(main.variables.pieces[selectedpiece.name].img);
-      $("#" + target.id).attr("chess", selectedpiece.name);
+      let pieceImg = main.variables.pieces[selectedpiece.name].img;
       //old cell
       $("#" + selectedpiece.id).html("");
       $("#" + selectedpiece.id).attr("chess", "null");
+      main.methods.animate_move(selectedpiece.id, target.id, pieceImg, function() {
+      //new cell
+      $("#" + target.id).html(main.variables.pieces[selectedpiece.name].img);
+      $("#" + target.id).attr("chess", selectedpiece.name);
       //moved piece
       main.variables.pieces[selectedpiece.name].position = target.id;
       main.variables.pieces[selectedpiece.name].moved = true;
       // captured piece
       main.variables.pieces[target.name].captured = true;
+      });
     },
 
     move: function (target) {
       let selectedpiece = $("#" + main.variables.selectedpiece).attr("chess");
-
-      // new cell
-      $("#" + target.id).html(main.variables.pieces[selectedpiece].img);
-      $("#" + target.id).attr("chess", selectedpiece);
+      let startId = main.variables.selectedpiece;
+      let pieceImg = main.variables.pieces[selectedpiece].img;
       // old cell
       $("#" + main.variables.selectedpiece).html("");
       $("#" + main.variables.selectedpiece).attr("chess", "null");
+
+      main.methods.animate_move(startId, target.id, pieceImg, function()  {
+      // new cell
+      $("#" + target.id).html(pieceImg);
+      $("#" + target.id).attr("chess", selectedpiece);
       main.variables.pieces[selectedpiece].position = target.id;
       main.variables.pieces[selectedpiece].moved = true;
+      });
     },
 
     endturn: function () {
