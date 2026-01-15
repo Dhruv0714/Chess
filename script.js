@@ -1,3 +1,8 @@
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+const API_URL = isLocal ? "http://localhost:5000/" : "/api/brain";
+
 let main = {
   variables: {
     turn: "w",
@@ -1177,10 +1182,10 @@ let main = {
 
       console.log("Waiting for AI...");
       // Send the entire pieces object to Python
-      fetch("/get_move", {
+      fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -1211,7 +1216,7 @@ let main = {
           // Pass turn back to White
           main.methods.endturn();
         })
-        .catch(err => console.error("Error connecting to Brain:", err));
+        .catch((err) => console.error("Error connecting to Brain:", err));
     },
 
     endturn: function () {

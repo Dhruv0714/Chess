@@ -99,8 +99,9 @@ def minimax(board, depth, alpha, beta, maximizing):
             if beta <= alpha: break
         return min_eval
 
-@app.route('/get_move', methods=['POST'])
-def get_move():
+@app.route('/', defaults={'path': ''}, methods=['POST'])
+@app.route('/<path:path>', methods=['POST'])
+def get_move(path):
     data = request.json
     try:
         board = reconstruct_board(data['pieces'])
