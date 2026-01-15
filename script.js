@@ -1039,7 +1039,6 @@ let main = {
 
     b_options: function (position, coordinates) {
       let flag = false;
-
       coordinates = coordinates
         .map(function (val) {
           // convert the x,y into actual grid id coordinates;
@@ -1156,6 +1155,14 @@ let main = {
         $("#" + element).toggleClass("green shake-little neongreen_txt");
       });
     },
+
+    check_move: function (target_id) {
+      if (main.variables.highlighted.indexOf(target_id) != -1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 };
 
@@ -1176,19 +1183,15 @@ $(document).ready(function () {
     } else {
       selectedpiece.name = $("#" + main.variables.selectedpiece).attr("chess");
     }
-
     if (
       main.variables.selectedpiece == "" &&
       target.name.slice(0, 1) == main.variables.turn
     ) {
-      // show options
-
-      // moveoptions
       main.variables.selectedpiece = e.target.id;
       main.methods.moveoptions($(this).attr("chess"));
     } else if (main.variables.selectedpiece != "" && target.name == "null") {
       // move selected piece piece
-
+      if (main.methods.check_move(target.id)){
       if (selectedpiece.name == "w_king" || selectedpiece.name == "b_king") {
         let t0 = (selectedpiece.name = "w_king");
         let t1 = (selectedpiece.name = "b_king");
@@ -1296,7 +1299,6 @@ $(document).ready(function () {
 
           main.methods.endturn();
         } else {
-          // move selectedpiece
           main.methods.move(target);
           main.methods.endturn();
         }
@@ -1305,7 +1307,8 @@ $(document).ready(function () {
         main.methods.move(target);
         main.methods.endturn();
       }
-    } else if (
+    }
+   } else if (
       main.variables.selectedpiece != "" &&
       target.name != "null" &&
       target.id != selectedpiece.id &&
@@ -1320,13 +1323,15 @@ $(document).ready(function () {
         // if it's not trying to capture pieces not in its movement range
         if (target.name === "b_king") {
           alert("White wins!");
-          //main.variables.gameOver = true;
+          main.variables.gameOver = true;
+          location.reload(true);
           return;
         }
 
         if (target.name === "w_king") {
           alert("Black wins!");
-          //main.variables.gameOver = true;
+          main.variables.gameOver = true;
+          location.reload(true);
           return;
         }
         // capture
