@@ -1171,17 +1171,21 @@ let main = {
 
     call_ai: function () {
       console.log("AI is thinking...");
+      let payload = {
+        pieces: main.variables.pieces,
+      };
 
+      console.log("Waiting for AI...");
       // Send the entire pieces object to Python
       fetch("/get_move", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pieces: main.variables.pieces }),
+        body: JSON.stringify(payload)
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.error) {
-            console.log(data.error);
+            console.log("Game Over or Error");
             return;
           }
 
@@ -1206,7 +1210,8 @@ let main = {
 
           // Pass turn back to White
           main.methods.endturn();
-        });
+        })
+        .catch(err => console.error("Error connecting to Brain:", err));
     },
 
     endturn: function () {
