@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
+torch.set_num_threads(1)
 import torch.nn as nn
 import torch.nn.functional as F
 import chess

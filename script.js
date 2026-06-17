@@ -1,6 +1,7 @@
 // Use local API endpoint if running locally, else use relative path
-const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
-const API_URL = isLocal ? "http://localhost:5000/api/brain" : "/api/brain";
+
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const API_URL = isLocal ? "http://localhost:5000/api/brain" : "/api/proxy";
 
 let main = {
     variables: {
