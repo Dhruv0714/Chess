@@ -1,88 +1,138 @@
-html,
-body {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  font-family: sans-serif;
+/* --- GLOBAL STYLES --- */
+:root {
+    --light-square: #EBECD0;
+    --dark-square: #739552;
+    --bg-color: #302E2B;
+    --text-main: #FFFFFF;
 }
 
-div * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-#turn {
-  max-width: 451px;
-  max-height: 30px;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  float: right;
-  border-radius: 5px;
-  border: 1px solid rgb(0, 0, 0);
-  border-style: inset;
-  text-align: center;
-  padding: 5px 0 0 0;
-  background: #fff;
-  transition: .85s linear;
+* {
+    box-sizing: border-box;
 }
 
-.turnhighlight {
-  background: #5cb85c !important;
-  color: #fff;
+/* --- LAYOUT WRAPPERS --- */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* --- THE BOARD --- */
+.board-container {
+    display: flex;
+    flex-direction: row;
+    background: #262522;
+    padding: 10px 15px 15px 5px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.ranks {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-right: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #999;
+    user-select: none;
+}
+
+.rank-label {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board-and-files {
+    display: flex;
+    flex-direction: column;
 }
 
 #game {
-  max-width: 504px;
-  max-height: 504px;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid #403D39;
 }
 
-.cellprefix {
-  width: 100%;
-  height: 100%;
-  max-width: 50px;
-  max-height: 50px;
-  float: left;
-  margin: 3px;
-  padding: 15px 0 0 20px;
+.files {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-top: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #999;
+    user-select: none;
 }
 
+.file-label {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- SQUARES & PIECES --- */
 .gamecell {
-  border: 1px solid #000;
-  width: 100%;
-  height: 100%;
-  max-width: 50px;
-  max-height: 50px;
-  float: left;
-  margin: 3px;
-  transition: all 0.1s ease-in-out;
-  border-radius: 5px;
-  font-size: 30pt;
-  padding: 0 0 0 6px;
-  cursor: pointer;
-  z-index: 1;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    color: #000;
 }
 
-.gamecell:hover {
-  color: #fff;
-  background: rgba(37, 88, 228, 0.712);
-  z-index: 2;
-  transform: translate(3px, -3px);
-  animation: neonBlueText 0.1s ease-in-out infinite alternate;
+.gamecell:not(.grey) {
+    background-color: var(--light-square);
 }
 
-.grey {
-  background: rgba(73, 69, 69, 0.801);
+.gamecell.grey {
+    background-color: var(--dark-square);
 }
 
-.green {
-  background: rgb(65, 161, 73) !important;
+/* Hover outline effect */
+.gamecell:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Professional move hint (dot in center) */
+.gamecell.green::before {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    z-index: 2;
 }
 
 .moving-piece {
@@ -90,54 +140,99 @@ div * {
     justify-content: center;
     align-items: center;
     color: #000;
-    transition: none !important; /* Prevent CSS transitions from fighting jQuery animation */
+    font-size: 42px;
+    transition: none !important;
 }
 
-/* The switch - the box around the slider */
+/* --- CONTROLS SECTION --- */
+.controls-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    background: #262522;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+#turn {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #403D39;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.turnhighlight {
+    background: var(--dark-square) !important;
+    color: white;
+    box-shadow: 0 0 10px rgba(115, 149, 82, 0.6);
+}
+
+/* --- AI TOGGLE SWITCH --- */
+.ai-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    color: #ccc;
+}
+
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-  vertical-align: middle;
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
 }
 
-/* Hide default HTML checkbox */
 .switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
-/* The slider */
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #555;
+    transition: .3s;
+    border-radius: 34px;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+    background-color: var(--dark-square);
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
+    transform: translateX(22px);
+}
+
+@media (max-width: 600px) {
+    #game, .rank-label, .file-label, .gamecell {
+        width: 45px; height: 45px; font-size: 32px;
+    }
+    #game {
+        grid-template-columns: repeat(8, 45px);
+        grid-template-rows: repeat(8, 45px);
+    }
+    .controls-panel {
+        flex-direction: column;
+        gap: 15px;
+    }
 }
