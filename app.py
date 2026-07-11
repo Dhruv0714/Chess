@@ -45,7 +45,7 @@ class ChessNet(nn.Module):
 # Load the model globally so it's ready when requests come in
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = ChessNet().to(device)
-model.load_state_dict(torch.load("gm_model_v1.pth", map_location=device))
+model.load_state_dict(torch.load("gm_model_v2.pth", map_location=device))
 model.eval()
 print("✅ Brain loaded and server is ready!")
 
